@@ -24,10 +24,9 @@
 | Privacidad | Logs privados | Compartir/publicar queda fuera del MVP |
 | Autenticación | Email y contraseña mediante un servicio gestionado | Evita implementar y mantener auth propia |
 | Exportación | Exportar todo a Markdown y JSON | Poco esfuerzo; evita que los datos queden atrapados |
+| Stack | Next.js + Supabase + Prisma, desplegado en Vercel (ver sección 6) | Un solo proyecto full-stack con hosting y auth gestionados |
 
 ### 2.1 Preguntas abiertas
-- ¿Stack definitivo? (ver sección 6)
-- ¿Hosting: gestionado o servidor propio?
 - ¿Nivel de diseño: funcional y simple o con identidad visual?
 
 ## 3. Alcance del MVP
@@ -80,7 +79,7 @@
 - Logs públicos / changelog compartible.
 - Aplicación móvil nativa.
 
-## 6. Stack propuesto (pendiente de confirmar)
+## 6. Stack
 - **Frontend y backend:** Next.js (TypeScript).
 - **Base de datos:** PostgreSQL en Supabase, con Prisma como ORM.
 - **Autenticación:** Supabase Auth (alternativas: Clerk, Auth.js).
@@ -97,7 +96,7 @@
 - Que ver el historial compense el esfuerzo de escribir.
 
 ## 8. Hoja de ruta
-1. Confirmar el stack y crear el esqueleto del proyecto (repo, CI, despliegue).
+1. Crear el esqueleto del proyecto con el stack elegido (Next.js, Prisma, CI, despliegue en Vercel).
 2. Modelo de datos y CRUD de proyectos y logs.
 3. Registro rápido y línea de tiempo semanal.
 4. Autenticación con el servicio gestionado.
