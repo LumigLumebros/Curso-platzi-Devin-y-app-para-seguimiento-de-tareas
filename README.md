@@ -12,20 +12,12 @@ ShipLog permite dejar constancia breve de cada avance en un proyecto para tener 
 
 ## Alcance del MVP
 
-1. **Autenticación mínima:** registro, inicio y cierre de sesión con email y contraseña; cada usuario solo ve sus datos.
-2. **CRUD de proyectos:** nombre, descripción (opcional) y fecha de creación.
-3. **CRUD de logs:** fecha y texto, dentro de un proyecto, ordenados del más reciente al más antiguo.
-
-### Modelo de datos inicial
-
-| Entidad  | Campos principales                                     |
-|----------|--------------------------------------------------------|
-| Usuario  | id, email, contraseña (hash), fecha de creación        |
-| Proyecto | id, usuario_id, nombre, descripción, fecha de creación |
-| Log      | id, proyecto_id, fecha, texto, fecha de creación       |
-
-**Fuera del MVP:** colaboración multiusuario, integraciones (GitHub, Slack, etc.), API pública, etiquetas, búsqueda avanzada, reportes, exportación y app móvil nativa.
+- **Registro rápido** desde la pantalla de inicio.
+- **Línea de tiempo semanal** con los logs de todos los proyectos.
+- **Proyectos y logs** (crear, editar, archivar/eliminar).
+- **Autenticación** con email y contraseña.
+- **Exportación** a Markdown y JSON.
 
 ## Planificación
 
-El análisis completo de la idea, las preguntas para definir el MVP (uso y usuarios, datos, integraciones, forma) y los próximos pasos están en [PLAN.md](PLAN.md).
+Las decisiones del MVP, el modelo de datos, el stack propuesto, los criterios de éxito y la hoja de ruta están en [PLAN.md](PLAN.md).

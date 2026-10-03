@@ -1,92 +1,104 @@
 # ShipLog — Documento de planificación
 
-## 1. Análisis de la idea
+## 1. Visión
 
-**ShipLog** es una aplicación para registrar el progreso de proyectos mediante entradas de bitácora ("logs") con fecha y texto. La idea central: cada vez que avanzas en un proyecto ("shippeas" algo), dejas constancia breve de qué hiciste, de modo que con el tiempo tengas un historial claro y consultable.
+**ShipLog** es una aplicación web para registrar el progreso de proyectos mediante entradas de bitácora ("logs") con fecha y texto. Cada vez que avanzas en un proyecto ("shippeas" algo), dejas constancia breve de qué hiciste para tener, con el tiempo, un historial claro y consultable.
 
-**Problema que resuelve**
-- El progreso en proyectos personales o de equipo se pierde entre commits, chats y notas dispersas.
-- Cuesta responder "¿qué hice esta semana / este mes?" o "¿cuándo se terminó X?".
+**Problema**
+- El progreso se pierde entre commits, chats y notas dispersas.
+- Cuesta responder "¿qué hice esta semana?" o "¿cuándo se terminó X?".
 - Falta un lugar simple y de baja fricción para documentar avances.
 
-**Propuesta de valor**
-- Registro rápido: escribir un log debe tomar segundos.
-- Historial ordenado por proyecto y por fecha.
-- Base para futuras funciones (resúmenes, reportes, integraciones).
+**Pregunta principal que responde la app:** *"¿Qué hice esta semana?"*
 
-**Riesgos / supuestos a validar**
-- Que la fricción de registrar sea lo suficientemente baja para crear hábito.
-- Que el valor de "ver el historial" justifique el esfuerzo de escribir.
-- Alcance: evitar convertirlo en un gestor de tareas completo (no es Jira/Trello).
+**Qué no es:** un gestor de tareas (no es Jira/Trello). No hay estados, asignaciones ni tableros.
 
-## 2. Preguntas para definir el MVP
+## 2. Decisiones del MVP
 
-### 2.1 Uso y usuarios
-- ¿Quién es el usuario principal: desarrollador individual, freelancer, equipo pequeño, estudiante?
-- ¿Es de uso personal (un solo usuario) o colaborativo (varios usuarios por proyecto)?
-- ¿Con qué frecuencia se espera registrar logs: diaria, por sesión de trabajo, por entrega?
-- ¿Qué pregunta principal debe responder la app? (p. ej. "¿qué hice?", "¿qué se entregó?", "¿cómo va el proyecto?")
-- ¿Los logs son privados o se pueden compartir/publicar (p. ej. changelog público)?
+| Tema | Decisión | Motivo |
+|------|----------|--------|
+| Usuario | Uso personal: un usuario, sus propios proyectos | Mínimo alcance; la colaboración se valida después |
+| Forma | App web responsive (usable desde el móvil) | Un solo código para escritorio y móvil |
+| Texto del log | Markdown (texto plano también funciona) | Permite listas y enlaces sin coste extra |
+| Fecha del log | Editable; por defecto, hoy | Registrar algo que se hizo ayer es habitual |
+| Privacidad | Logs privados | Compartir/publicar queda fuera del MVP |
+| Autenticación | Email y contraseña mediante un servicio gestionado | Evita implementar y mantener auth propia |
+| Exportación | Exportar todo a Markdown y JSON | Poco esfuerzo; evita que los datos queden atrapados |
+| Stack | Next.js + Supabase + Prisma, desplegado en Vercel (ver sección 6) | Un solo proyecto full-stack con hosting y auth gestionados |
 
-### 2.2 Datos
-- ¿Qué entidades son imprescindibles? (Usuario, Proyecto, Log)
-- ¿Qué campos mínimos tiene un log? (fecha, texto; ¿título?, ¿etiquetas?, ¿estado?, ¿tiempo invertido?)
-- ¿El texto admite formato (Markdown) o es texto plano?
-- ¿La fecha del log es editable (registrar algo de ayer) o siempre es la de creación?
-- ¿Se necesita búsqueda o filtrado (por fecha, proyecto, etiqueta) desde el inicio?
-- ¿Requisitos de exportación o respaldo de datos (CSV, Markdown, JSON)?
+### 2.1 Preguntas abiertas
+- ¿Nivel de diseño: funcional y simple o con identidad visual?
 
-### 2.3 Integraciones
-- ¿Debe conectarse con GitHub/GitLab (commits, PRs, releases) para generar logs automáticamente?
-- ¿Notificaciones o recordatorios (email, Slack, Discord)?
-- ¿Autenticación con proveedores externos (Google, GitHub OAuth) o solo email/contraseña?
-- ¿API pública para crear logs desde scripts/CLI?
-- ¿Cuáles de estas son necesarias en el MVP y cuáles pueden esperar?
+## 3. Alcance del MVP
 
-### 2.4 Forma
-- ¿Aplicación web, móvil, de escritorio o CLI?
-- ¿Responsive / usable desde el móvil desde el día uno?
-- ¿Stack tecnológico preferido (frontend, backend, base de datos)?
-- ¿Dónde se despliega (hosting gestionado, servidor propio, local)?
-- ¿Nivel de diseño esperado: funcional y simple, o con identidad visual definida?
+### 3.1 Registro rápido (pantalla de inicio)
+- Campo de texto siempre visible en la pantalla de inicio para crear un log.
+- Proyecto preseleccionado: el último usado.
+- Guardar con `Ctrl+Enter` / `Cmd+Enter`.
+- Objetivo: registrar un log en menos de 10 segundos.
 
-## 3. Recomendación por defecto de MVP
+### 3.2 Línea de tiempo semanal
+- Vista principal con los logs de **todos** los proyectos, del más reciente al más antiguo.
+- Agrupados por semana, con el nombre del proyecto en cada log.
+- Navegación a semanas anteriores.
 
-Si no hay respuestas específicas a las preguntas anteriores, se recomienda el siguiente alcance mínimo:
+### 3.3 Proyectos
+- Crear, listar, ver, editar y archivar proyectos.
+- Campos: nombre, descripción (opcional).
+- Un proyecto archivado no aparece en el selector del registro rápido, pero sus logs siguen en el historial.
+- Eliminar un proyecto elimina sus logs (con confirmación explícita).
 
-### 3.1 Autenticación mínima
-- Registro e inicio de sesión con email y contraseña.
-- Cierre de sesión.
-- Cada usuario solo ve y gestiona sus propios datos.
-
-### 3.2 CRUD de proyectos
-- Crear, listar, ver, editar y eliminar proyectos.
-- Campos: nombre, descripción (opcional), fecha de creación.
-
-### 3.3 CRUD de logs (con fecha y texto)
+### 3.4 Logs
 - Crear, listar, ver, editar y eliminar logs dentro de un proyecto.
 - Campos: fecha y texto.
-- Listado ordenado por fecha (más reciente primero).
+- Listado por proyecto ordenado por fecha (más reciente primero).
 
-### 3.4 Modelo de datos inicial
+### 3.5 Autenticación
+- Registro, inicio y cierre de sesión con email y contraseña.
+- Cada usuario solo ve y gestiona sus propios datos.
 
-| Entidad  | Campos principales                                  |
-|----------|-----------------------------------------------------|
-| Usuario  | id, email, contraseña (hash), fecha de creación     |
-| Proyecto | id, usuario_id, nombre, descripción, fecha de creación |
-| Log      | id, proyecto_id, fecha, texto, fecha de creación    |
+### 3.6 Exportación
+- Descargar todos los proyectos y logs en Markdown o JSON.
 
-Relaciones: un Usuario tiene muchos Proyectos; un Proyecto tiene muchos Logs.
+## 4. Modelo de datos
 
-### 3.5 Fuera del alcance del MVP
+| Entidad  | Campos |
+|----------|--------|
+| Usuario  | id, email, contraseña (hash, gestionada por el servicio de auth), fecha_creacion, fecha_actualizacion |
+| Proyecto | id, usuario_id, nombre, descripcion (opcional), archivado (bool), fecha_creacion, fecha_actualizacion |
+| Log      | id, proyecto_id, fecha (solo día), texto, fecha_creacion, fecha_actualizacion |
+
+- Un Usuario tiene muchos Proyectos; un Proyecto tiene muchos Logs.
+- `Log.fecha` es el día en que se hizo el trabajo; `fecha_creacion` es cuándo se escribió el log.
+- Borrar un Proyecto borra sus Logs en cascada.
+
+## 5. Fuera del MVP
 - Colaboración multiusuario y permisos por proyecto.
 - Integraciones (GitHub, Slack, etc.) y API pública.
-- Etiquetas, búsqueda avanzada, reportes y exportación.
+- Etiquetas, búsqueda avanzada y reportes.
+- Logs públicos / changelog compartible.
 - Aplicación móvil nativa.
 
-## 4. Próximos pasos
-1. Responder las preguntas de la sección 2 y ajustar el alcance.
-2. Elegir stack tecnológico y estrategia de despliegue.
-3. Implementar autenticación mínima.
-4. Implementar CRUD de proyectos y CRUD de logs.
-5. Probar con usuarios reales y decidir la siguiente iteración.
+## 6. Stack
+- **Frontend y backend:** Next.js (TypeScript).
+- **Base de datos:** PostgreSQL en Supabase, con Prisma como ORM.
+- **Autenticación:** Supabase Auth (alternativas: Clerk, Auth.js).
+- **Despliegue:** Vercel.
+- **Calidad:** ESLint, tests con Vitest y CI en GitHub Actions.
+
+## 7. Criterios de éxito
+- Registrar un log toma menos de 10 segundos desde la pantalla de inicio.
+- Uso al menos 4 días por semana durante 2 semanas seguidas.
+- La línea de tiempo responde "¿qué hice esta semana?" sin tener que entrar a cada proyecto.
+
+**Riesgos a validar**
+- Que la fricción sea lo bastante baja para crear el hábito.
+- Que ver el historial compense el esfuerzo de escribir.
+
+## 8. Hoja de ruta
+1. Crear el esqueleto del proyecto con el stack elegido (Next.js, Prisma, CI, despliegue en Vercel).
+2. Modelo de datos y CRUD de proyectos y logs.
+3. Registro rápido y línea de tiempo semanal.
+4. Autenticación con el servicio gestionado.
+5. Exportación a Markdown y JSON.
+6. Usarlo 2 semanas, medir los criterios de éxito y decidir la siguiente iteración.
